@@ -28,7 +28,7 @@ public class Main {
 
     private int[][] DTR;
     private int[][] RTU;
-    private int case_No = 2; //If it is equal to one, the first case (Q 2.a) is executed; otherwise the second case (Q 2.d)
+    private int case_No = 1; //If it is equal to one, the first case (Q 2.a) is executed; otherwise the second case (Q 2.d)
     public static void main(String[] args) {
         Main main = new Main();
         boolean wasFetchingDataSuccessful = main.readDataFromFile();
