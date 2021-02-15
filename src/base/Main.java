@@ -1,15 +1,23 @@
 package base;
 
+
 import a_star.AStar;
 import approximation.LeastLaxityFirst;
+import com.mysql.cj.util.Base64Decoder;
 import javafx.util.Pair;
 
+
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+
+import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 public class Main {
 
@@ -29,9 +37,18 @@ public class Main {
     private int[][] DTR;
     private int[][] RTU;
     private int case_No = 1; //If it is equal to one, the first case (Q 2.a) is executed; otherwise the second case (Q 2.d)
-    public static void main(String[] args) {
+    public static void main(String[] args) throws
+            CloneNotSupportedException {
         Main main = new Main();
         boolean wasFetchingDataSuccessful = main.readDataFromFile();
+
+        Class1 x = new Class1(34);
+        Class1 y = new Class1(50);
+
+       System.out.println("Before swaping:"+x.a+", "+y.a);
+       main.swap( x.clone(),y.clone());
+       System.out.println("After swaping:"+x.a+", "+y.a);
+
 
         if (!wasFetchingDataSuccessful) {
             return;
@@ -40,6 +57,7 @@ public class Main {
         main.DTR = new int[Main.DRIVER_COUNT][Main.RESTAURANT_COUNT];
         main.RTU = new int[Main.RESTAURANT_COUNT][Main.USER_COUNT];
         main.calculateDistanceMatrices();
+        public static  main.LeastLaxityFirst(File f1)
 
         LeastLaxityFirst lowLaxityFirst = new LeastLaxityFirst(
                 main.usersPosition.clone(),
@@ -67,11 +85,39 @@ public class Main {
         aStar.execute();
     }
 
+    private void swap(Class1 A,Class1 B)
+    {
+        Class1 temp = new Class1(5);
+        temp.a = A.a;
+        A.a = B.a;
+        B.a = temp.a;
+    }
+
     private boolean readDataFromFile() {
         String fileName =  "src/sample_input/example_1";
         if (case_No!=1)
             fileName = "src/sample_input/example_2";
         try {
+
+
+            File fileobj = new File("src/sample_input/example_2");
+            System.out.println("The file is:");
+            Scanner filereader = new Scanner(fileobj);
+            String Line = "";
+            ArrayList <Pair<Integer,Integer>> PairLists = new ArrayList<Pair<Integer,Integer>>();
+            while (filereader.hasNext()) {
+                Line = filereader.nextLine();
+              //  System.out.println(Line);
+
+                if (Line.toLowerCase().contains("drivers")) {
+                    Line = Line.substring(Line.indexOf('{')+1, Line.indexOf('}'));
+
+                    PairLists.add(new Pair<Integer,Integer>(Integer.parseInt(String.valueOf(Line.charAt(Line.indexOf('(')+1))),Integer.parseInt(String.valueOf(Line.charAt(Line.indexOf(')')-1)))));
+
+                }
+            }
+
+
             Files.lines(Paths.get(fileName)).forEach(line -> {
                 if (line.toLowerCase().contains("driver".toLowerCase())) {
                     driversPosition = initializePositionArray(line);

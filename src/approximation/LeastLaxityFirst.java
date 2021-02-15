@@ -23,6 +23,8 @@ public class LeastLaxityFirst {
 
     private LinkedHashMap<Integer, Integer> userToDriver = new LinkedHashMap<>(); // Which user is assigned to which driver
 
+
+
     public LeastLaxityFirst(
             Position[] usersPosition,
             Position[] driversPosition,
