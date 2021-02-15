@@ -7,6 +7,10 @@ import approximation.LeastLaxityFirst;
 import javafx.util.Pair;
 
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,7 +40,7 @@ public class Main {
 
     private int[][] DTR;
     private int[][] RTU;
-    private int case_No = 1; //If it is equal to one, the first case (Q 2.a) is executed; otherwise the second case (Q 2.d)
+    private int case_No = 2; //If it is equal to one, the first case (Q 2.a) is executed; otherwise the second case (Q 2.d)
     public static void main(String[] args) throws
             CloneNotSupportedException {
         Main main = new Main();
@@ -81,15 +85,28 @@ public class Main {
     }
 
 
+    public static void writeJsonSimpleDemo(String filename) throws Exception {
+        JSONObject sampleObject = new JSONObject();
+        sampleObject.put("name", "Stackabuser");
+        sampleObject.put("age", 35);
+
+        JSONArray messages = new JSONArray();
+        messages.add("Hey!");
+        messages.add("What's up?!");
+
+        sampleObject.put("messages", messages);
+        Files.write(Paths.get(filename), sampleObject.toJSONString().getBytes());
+    }
+
 
     private boolean readDataFromFile() {
-        String fileName =  "src/sample_input/example_1";
+        String fileName =  "src/main/java/sample_input/example_1";
         if (case_No!=1)
-            fileName = "src/sample_input/example_2";
+            fileName = "src/main/java/sample_input/example_2";
         try {
 
 
-            File fileobj = new File("src/sample_input/example_2");
+            File fileobj = new File("src/main/java/sample_input/example_2");
             System.out.println("The file is:");
             Scanner filereader = new Scanner(fileobj);
             String Line = "";
