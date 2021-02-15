@@ -3,7 +3,7 @@ package base;
 
 import a_star.AStar;
 import approximation.LeastLaxityFirst;
-import com.mysql.cj.util.Base64Decoder;
+
 import javafx.util.Pair;
 
 
@@ -42,12 +42,7 @@ public class Main {
         Main main = new Main();
         boolean wasFetchingDataSuccessful = main.readDataFromFile();
 
-        Class1 x = new Class1(34);
-        Class1 y = new Class1(50);
 
-       System.out.println("Before swaping:"+x.a+", "+y.a);
-       main.swap( x.clone(),y.clone());
-       System.out.println("After swaping:"+x.a+", "+y.a);
 
 
         if (!wasFetchingDataSuccessful) {
@@ -57,7 +52,7 @@ public class Main {
         main.DTR = new int[Main.DRIVER_COUNT][Main.RESTAURANT_COUNT];
         main.RTU = new int[Main.RESTAURANT_COUNT][Main.USER_COUNT];
         main.calculateDistanceMatrices();
-        public static  main.LeastLaxityFirst(File f1)
+
 
         LeastLaxityFirst lowLaxityFirst = new LeastLaxityFirst(
                 main.usersPosition.clone(),
@@ -85,13 +80,7 @@ public class Main {
         aStar.execute();
     }
 
-    private void swap(Class1 A,Class1 B)
-    {
-        Class1 temp = new Class1(5);
-        temp.a = A.a;
-        A.a = B.a;
-        B.a = temp.a;
-    }
+
 
     private boolean readDataFromFile() {
         String fileName =  "src/sample_input/example_1";
