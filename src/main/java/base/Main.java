@@ -3,25 +3,16 @@ package base;
 
 import a_star.AStar;
 import approximation.LeastLaxityFirst;
-
 import javafx.util.Pair;
-
-
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
-import java.util.Scanner;
-import javax.swing.JOptionPane;
 
 public class Main {
 
@@ -40,14 +31,12 @@ public class Main {
 
     private int[][] DTR;
     private int[][] RTU;
-    private int case_No = 2; //If it is equal to one, the first case (Q 2.a) is executed; otherwise the second case (Q 2.d)
+    private int caseNo = 2; //If it is equal to one, the first case (Q 2.a) is executed; otherwise the second case (Q 2.d)
+
     public static void main(String[] args) throws
-            CloneNotSupportedException {
+            CloneNotSupportedException, IOException {
         Main main = new Main();
         boolean wasFetchingDataSuccessful = main.readDataFromFile();
-
-
-
 
         if (!wasFetchingDataSuccessful) {
             return;
@@ -56,7 +45,6 @@ public class Main {
         main.DTR = new int[Main.DRIVER_COUNT][Main.RESTAURANT_COUNT];
         main.RTU = new int[Main.RESTAURANT_COUNT][Main.USER_COUNT];
         main.calculateDistanceMatrices();
-
 
         LeastLaxityFirst lowLaxityFirst = new LeastLaxityFirst(
                 main.usersPosition.clone(),
@@ -69,6 +57,7 @@ public class Main {
                 main.RTU.clone()
         );
         SolutionModel llfSolution = lowLaxityFirst.execute();
+        writeResults(llfSolution.getUserToDriver(), "LLF");
 
         AStar aStar = new AStar(
                 llfSolution,
@@ -81,45 +70,66 @@ public class Main {
                 base.Utils.arrayCopy(main.DTR),
                 main.RTU.clone()
         );
-        aStar.execute();
+        LinkedHashMap<Integer, Integer> execute = aStar.execute();
+        writeResults(execute, "A Star");
     }
 
+    private static void writeResults(LinkedHashMap<Integer, Integer> userToDriver, String algorithmName) throws IOException {
+        try {
+            LinkedHashMap<String, String> result = userToDriverResult(userToDriver);
+            JSONObject jsonObject = new JSONObject(result);
 
-    public static void writeJsonSimpleDemo(String filename) throws Exception {
-        JSONObject sampleObject = new JSONObject();
-        sampleObject.put("name", "Stackabuser");
-        sampleObject.put("age", 35);
+            String directoryPath = "src/main/java/results";
+            File directory = new File(directoryPath);
+            long fileCount = 0;
 
-        JSONArray messages = new JSONArray();
-        messages.add("Hey!");
-        messages.add("What's up?!");
+            if (!directory.exists()) {
+                boolean mkdir = directory.mkdir();
+                if (!mkdir) {
+                    return;
+                }
+            }
 
-        sampleObject.put("messages", messages);
-        Files.write(Paths.get(filename), sampleObject.toJSONString().getBytes());
+            if (directory.list() != null) {
+                fileCount = Arrays.asList(directory.list()).stream().filter(x -> x.contains(algorithmName)).count();
+            }
+
+            Files.write(
+                    Paths.get(directoryPath + "/Results - " + algorithmName + " - " + (fileCount + 1) + ".json"),
+                    jsonObject.toJSONString().getBytes()
+            );
+        } catch (Exception ex) {
+            // TODO: Exception!
+        }
     }
 
+    private static LinkedHashMap<String, String> userToDriverResult(LinkedHashMap<Integer, Integer> userToDriver) {
+        LinkedHashMap<String, String> results = new LinkedHashMap<>();
+        userToDriver.forEach((userIndex, driverIndex) -> results.put("User " + (userIndex + 1), "Driver " + (driverIndex + 1)));
+        return results;
+    }
 
     private boolean readDataFromFile() {
-        String fileName =  "src/main/java/sample_input/example_1";
-        if (case_No!=1)
+        String fileName = "src/main/java/sample_input/example_1";
+
+        if (caseNo != 1) {
             fileName = "src/main/java/sample_input/example_2";
+        }
+
         try {
-
-
-            File fileobj = new File("src/main/java/sample_input/example_2");
+            File file = new File("src/main/java/sample_input/example_2");
             System.out.println("The file is:");
-            Scanner filereader = new Scanner(fileobj);
+            Scanner filereader = new Scanner(file);
             String Line = "";
-            ArrayList <Pair<Integer,Integer>> PairLists = new ArrayList<Pair<Integer,Integer>>();
+            ArrayList<Pair<Integer, Integer>> PairLists = new ArrayList<Pair<Integer, Integer>>();
             while (filereader.hasNext()) {
                 Line = filereader.nextLine();
-              //  System.out.println(Line);
-
                 if (Line.toLowerCase().contains("drivers")) {
-                    Line = Line.substring(Line.indexOf('{')+1, Line.indexOf('}'));
-
-                    PairLists.add(new Pair<Integer,Integer>(Integer.parseInt(String.valueOf(Line.charAt(Line.indexOf('(')+1))),Integer.parseInt(String.valueOf(Line.charAt(Line.indexOf(')')-1)))));
-
+                    Line = Line.substring(Line.indexOf('{') + 1, Line.indexOf('}'));
+                    PairLists.add(new Pair<>(
+                                    Integer.parseInt(String.valueOf(Line.charAt(Line.indexOf('(') + 1))),
+                                    Integer.parseInt(String.valueOf(Line.charAt(Line.indexOf(')') - 1))))
+                    );
                 }
             }
 

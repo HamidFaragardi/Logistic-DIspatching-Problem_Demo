@@ -47,7 +47,7 @@ public class AStar {
         this.RTU = RTU;
     }
 
-    public void execute() {
+    public LinkedHashMap<Integer, Integer> execute() {
         // Starting point
         int upperBoundCost = llfSolution.calculateSolutionCost();
         LinkedHashMap<Integer, Integer> bestSolutionSoFar = new LinkedHashMap<>(llfSolution.getUserToDriver());
@@ -98,7 +98,10 @@ public class AStar {
 
         userToDriver = bestSolutionSoFar;
         totalDelay = upperBoundCost;
+
         printResults();
+
+        return userToDriver;
     }
 
     public int delayEstimationForOtherUsersHeuristic(TreeNode node) {

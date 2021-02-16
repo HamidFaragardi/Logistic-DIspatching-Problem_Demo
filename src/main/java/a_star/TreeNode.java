@@ -2,7 +2,7 @@ package a_star;
 
 import base.Main;
 import base.Utils;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 
