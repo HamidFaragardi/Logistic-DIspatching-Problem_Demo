@@ -5,6 +5,11 @@ import a_star.AStar;
 import approximation.LeastLaxityFirst;
 import javafx.util.Pair;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +42,8 @@ public class Main {
             CloneNotSupportedException, IOException {
         Main main = new Main();
         boolean wasFetchingDataSuccessful = main.readDataFromFile();
+
+        boolean wasFetchingJsonDataSuccessful = main.readDataFromJsonFile();
 
         if (!wasFetchingDataSuccessful) {
             return;
@@ -77,7 +84,13 @@ public class Main {
     private static void writeResults(LinkedHashMap<Integer, Integer> userToDriver, String algorithmName) throws IOException {
         try {
             LinkedHashMap<String, String> result = userToDriverResult(userToDriver);
-            JSONObject jsonObject = new JSONObject(result);
+            Map m = new LinkedHashMap(2);
+            m.put("Orders",result);
+            m.put("Total delay","19");
+            JSONObject jsonObject = new JSONObject(m);
+
+
+            //jsonObject.put();
 
             String directoryPath = "src/main/java/results";
             File directory = new File(directoryPath);
@@ -105,9 +118,60 @@ public class Main {
 
     private static LinkedHashMap<String, String> userToDriverResult(LinkedHashMap<Integer, Integer> userToDriver) {
         LinkedHashMap<String, String> results = new LinkedHashMap<>();
-        userToDriver.forEach((userIndex, driverIndex) -> results.put("User " + (userIndex + 1), "Driver " + (driverIndex + 1)));
+        userToDriver.forEach((userIndex, driverIndex) -> results.put("Order " + (userIndex + 1), "Driver " + (driverIndex + 1)));
         return results;
     }
+
+    private boolean readDataFromJsonFile() {
+
+        Scanner sc= new Scanner(System.in);
+        System.out.print("Enter a json file name:");
+        String FileName= sc.nextLine().trim();
+        String fileName = "src/main/java/sample_input/"+FileName;
+
+
+        JSONParser jsonParser = new JSONParser();
+
+
+        try {
+
+            FileReader reader = new FileReader(fileName);
+
+            System.out.println("The file has been found!");
+
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+
+            JSONArray employeeList = (JSONArray) obj;
+            System.out.println(employeeList);
+
+            //Iterate over employee array
+          //  employeeList.forEach( emp -> parseEmployeeObject( (JSONObject) emp ) );
+            return true;
+        } catch (Exception ex) {
+            System.err.println("An error occurred while reading data from the input file.");
+            return false;
+        }
+    }
+
+    private static void parseEmployeeObject(JSONObject employee)
+    {
+        //Get employee object within list
+        JSONObject employeeObject = (JSONObject) employee.get("employee");
+
+        //Get employee first name
+        String firstName = (String) employeeObject.get("firstName");
+        System.out.println(firstName);
+
+        //Get employee last name
+        String lastName = (String) employeeObject.get("lastName");
+        System.out.println(lastName);
+
+        //Get employee website name
+        String website = (String) employeeObject.get("website");
+        System.out.println(website);
+    }
+
 
     private boolean readDataFromFile() {
         String fileName = "src/main/java/sample_input/example_1";
@@ -117,7 +181,7 @@ public class Main {
         }
 
         try {
-            File file = new File("src/main/java/sample_input/example_2");
+         /*   File file = new File("src/main/java/sample_input/example_2");
             System.out.println("The file is:");
             Scanner filereader = new Scanner(file);
             String Line = "";
@@ -131,7 +195,7 @@ public class Main {
                                     Integer.parseInt(String.valueOf(Line.charAt(Line.indexOf(')') - 1))))
                     );
                 }
-            }
+            }*/
 
 
             Files.lines(Paths.get(fileName)).forEach(line -> {
