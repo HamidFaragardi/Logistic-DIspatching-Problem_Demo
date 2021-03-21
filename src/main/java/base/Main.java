@@ -25,11 +25,17 @@ public class Main {
 
     private int[][] DTR;
     private int[][] RTU;
+    private static String jarParentPath;
 
     public static void main(String[] args) throws CloneNotSupportedException, IOException {
         Main main = new Main();
-        InputParameters inputParameters = main.readDataFromFile();
 
+        jarParentPath = main.extractJarFileParent();
+        if (jarParentPath == null){
+            return;
+        }
+
+        InputParameters inputParameters = main.readDataFromFile();
         if (inputParameters == null) {
             return;
         }
@@ -66,42 +72,7 @@ public class Main {
         writeResults(execute, "A Star");
     }
 
-    private static void writeResults(LinkedHashMap<Integer, Integer> userToDriver, String algorithmName) throws IOException {
-        try {
-            LinkedHashMap<String, String> result = userToDriverResult(userToDriver);
-            JSONObject jsonObject = new JSONObject(result);
-
-            String directoryPath = "src/main/java/results";
-            File directory = new File(directoryPath);
-            long fileCount = 0;
-
-            if (!directory.exists()) {
-                boolean mkdir = directory.mkdir();
-                if (!mkdir) {
-                    return;
-                }
-            }
-
-            if (directory.list() != null) {
-                fileCount = Arrays.asList(directory.list()).stream().filter(x -> x.contains(algorithmName)).count();
-            }
-
-            Files.write(
-                    Paths.get(directoryPath + "/Results - " + algorithmName + " - " + (fileCount + 1) + ".json"),
-                    jsonObject.toJSONString().getBytes()
-            );
-        } catch (Exception ex) {
-            // TODO: Exception!
-        }
-    }
-
-    private static LinkedHashMap<String, String> userToDriverResult(LinkedHashMap<Integer, Integer> userToDriver) {
-        LinkedHashMap<String, String> results = new LinkedHashMap<>();
-        userToDriver.forEach((userIndex, driverIndex) -> results.put("User " + (userIndex + 1), "Driver " + (driverIndex + 1)));
-        return results;
-    }
-
-    private InputParameters readDataFromFile() {
+    private String extractJarFileParent() {
         String jarParentPath;
         try {
             System.out.println("***********************************************************");
@@ -123,7 +94,44 @@ public class Main {
             e.printStackTrace();
             return null;
         }
+        return jarParentPath;
+    }
 
+    private static void writeResults(LinkedHashMap<Integer, Integer> userToDriver, String algorithmName) throws IOException {
+        try {
+            LinkedHashMap<String, String> result = userToDriverResult(userToDriver);
+            JSONObject jsonObject = new JSONObject(result);
+
+            File directory = new File(jarParentPath, "results");
+            long fileCount = 0;
+
+            if (!directory.exists()) {
+                boolean mkdir = directory.mkdir();
+                if (!mkdir) {
+                    return;
+                }
+            }
+
+            if (directory.list() != null) {
+                fileCount = Arrays.asList(directory.list()).stream().filter(x -> x.contains(algorithmName)).count();
+            }
+
+            Files.write(
+                    Paths.get(directory.getAbsolutePath() + "/Results - " + algorithmName + " - " + (fileCount + 1) + ".json"),
+                    jsonObject.toJSONString().getBytes()
+            );
+        } catch (Exception ex) {
+            // TODO: Exception!
+        }
+    }
+
+    private static LinkedHashMap<String, String> userToDriverResult(LinkedHashMap<Integer, Integer> userToDriver) {
+        LinkedHashMap<String, String> results = new LinkedHashMap<>();
+        userToDriver.forEach((userIndex, driverIndex) -> results.put("User " + (userIndex + 1), "Driver " + (driverIndex + 1)));
+        return results;
+    }
+
+    private InputParameters readDataFromFile() {
         while (true) {
             Scanner inputScanner = new Scanner(System.in);
             System.out.println("Enter case number (for example, for input file '1.json', the case number would be: '1'): ");
@@ -154,6 +162,10 @@ public class Main {
                 if (inputParameters == null) {
                     throw new Exception();
                 }
+
+                USER_COUNT = inputParameters.getUsersPosition().length;
+                DRIVER_COUNT = inputParameters.getDriversPosition().length;
+                RESTAURANT_COUNT = inputParameters.getRestaurantsPosition().length;
             } catch (Exception ex) {
                 System.err.println("Wrong input json format.");
                 return null;
