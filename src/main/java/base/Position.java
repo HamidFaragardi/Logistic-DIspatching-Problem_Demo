@@ -1,11 +1,15 @@
 package base;
 
-public class Position {
-    public int x;
-    public int y;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Position {
+    private int x;
+    private int y;
 }
