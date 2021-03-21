@@ -26,6 +26,7 @@ public class Main {
     private int[][] DTR;
     private int[][] RTU;
     private static String jarParentPath;
+    private static int caseNo;
 
     public static void main(String[] args) throws CloneNotSupportedException, IOException {
         Main main = new Main();
@@ -101,6 +102,7 @@ public class Main {
         try {
             LinkedHashMap<String, String> result = userToDriverResult(userToDriver);
             JSONObject jsonObject = new JSONObject(result);
+            jsonObject.put("caseNumber", caseNo);
 
             File directory = new File(jarParentPath, "results");
             long fileCount = 0;
@@ -136,7 +138,6 @@ public class Main {
             Scanner inputScanner = new Scanner(System.in);
             System.out.println("Enter case number (for example, for input file '1.json', the case number would be: '1'): ");
             String inputCaseRawStr = inputScanner.next();
-            int caseNo;
             try {
                 caseNo = Integer.parseInt(inputCaseRawStr);
             } catch (Exception ex) {

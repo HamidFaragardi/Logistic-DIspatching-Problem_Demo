@@ -33,16 +33,10 @@ public class InputParameters {
         inputParameters.usersPosition = usersPosition;
         inputParameters.driversPosition = driversPosition;
         inputParameters.restaurantsPosition = restaurantsPosition;
-        inputParameters.userExpectations = new int[userExpectations.length];
-        inputParameters.userFoodPreparation = new int[userFoodPreparation.length];
+        inputParameters.userExpectations = userExpectations;
+        inputParameters.userFoodPreparation = userFoodPreparation;
         inputParameters.userRestaurantIndex = new int[userRestaurantIndex.length];
 
-        for (int i = 0; i < userExpectations.length; i++) {
-            inputParameters.userExpectations[i] = userExpectations[i] - 1;
-        }
-        for (int i = 0; i < userFoodPreparation.length; i++) {
-            inputParameters.userFoodPreparation[i] = userFoodPreparation[i] - 1;
-        }
         for (int i = 0; i < userRestaurantIndex.length; i++) {
             inputParameters.userRestaurantIndex[i] = userRestaurantIndex[i] - 1;
         }
